@@ -1,3 +1,7 @@
+# Ignore executable
+s3-cisbench
+
+# Ignore IDE settings
 .idea
 
 # Binaries for programs and plugins
