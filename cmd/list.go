@@ -1,0 +1,50 @@
+package cmd
+
+import (
+	"context"
+	"fmt"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/fatih/color"
+	"github.com/spf13/cobra"
+	"log"
+)
+
+// listCmd represents the list command
+var listCmd = &cobra.Command{
+	Use:   "list",
+	Short: "List AWS S3 buckets.",
+	Run: func(cmd *cobra.Command, args []string) {
+		PrintAllBuckets()
+	},
+}
+
+func PrintAllBuckets() {
+	ctx := context.TODO()
+	cfg, err := config.LoadDefaultConfig(ctx)
+	if err != nil {
+		log.Fatalf("Failed to load AWS SDK configuration: %v", err)
+	}
+	s3Client := s3.NewFromConfig(cfg)
+	result, err := s3Client.ListBuckets(ctx, &s3.ListBucketsInput{})
+	if err != nil {
+		color.Red("Error listing S3 buckets.")
+	}
+
+	for _, bucket := range result.Buckets {
+		fmt.Println(color.CyanString(*bucket.Name), color.BlueString(" (created: "+bucket.CreationDate.Format("2006-01-02")+")"))
+	}
+}
+
+func init() {
+	rootCmd.AddCommand(listCmd)
+
+	// Here you will define your flags and configuration settings.
+	// Cobra supports Persistent Flags which will work for this command
+	// and all subcommands, e.g.:
+	// listCmd.PersistentFlags().String("foo", "", "A help for foo")
+
+	// Cobra supports local flags which will only run when this command
+	// is called directly, e.g.:
+	// listCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
