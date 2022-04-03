@@ -3,11 +3,13 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"strconv"
+
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/fatih/color"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"log"
 )
 
 // listCmd represents the list command
@@ -20,6 +22,8 @@ var listCmd = &cobra.Command{
 }
 
 func PrintAllBuckets() {
+	log.SetLevel(log.DebugLevel)
+
 	ctx := context.TODO()
 	cfg, err := config.LoadDefaultConfig(ctx)
 	if err != nil {
@@ -31,9 +35,14 @@ func PrintAllBuckets() {
 		color.Red("Error listing S3 buckets.")
 	}
 
+	c := color.New(color.FgYellow).Add(color.Underline)
+	_, _ = c.Println("Creation date  Bucket name")
 	for _, bucket := range result.Buckets {
-		fmt.Println(color.CyanString(*bucket.Name), color.BlueString(" (created: "+bucket.CreationDate.Format("2006-01-02")+")"))
+		fmt.Println(color.BlueString(bucket.CreationDate.Format("2006-01-02")) + "     " + color.CyanString(*bucket.Name))
 	}
+
+	c = color.New(color.FgYellow)
+	_, _ = c.Println(strconv.Itoa(len(result.Buckets)) + " \uF5A7 overall")
 }
 
 func init() {

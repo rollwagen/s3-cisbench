@@ -12,6 +12,23 @@
 
 #### 2.1.5 Ensure that S3 Buckets are configured with 'Block public access'
 
+      ✖ ✔ BlockPublicAcls (BPA)
+      ✖ ✔ BlockPublicPolicy (BPP)
+      ✖ ✔ IgnorePublicAcls (IPA)
+      ✖ ✔ RestrictPublicBuckets (RPB)
+
 Note: not checked is
 > 2.1.4 Ensure all data in Amazon S3 has been discovered,
 > classified and secured when required
+
+"ΞΞ"
+
+"⚠⚠"
+
+"✗✗"
+
+"☡☡"
+
+"∆∆"
+
+"≈≈"
