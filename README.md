@@ -1,5 +1,7 @@
 # s3-cisbench
 
+![image](https://user-images.githubusercontent.com/7364201/161427647-8b1978de-a37c-4a57-a3df-fde00e8e5737.png)
+
 ## CIS AWS Benchmark v1.4.0: Storage
 
 ### S3
