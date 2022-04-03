@@ -38,7 +38,7 @@ func PrintAllBuckets() {
 	c := color.New(color.FgYellow).Add(color.Underline)
 	_, _ = c.Println("Creation date  Bucket name")
 	for _, bucket := range result.Buckets {
-		fmt.Println(color.BlueString(bucket.CreationDate.Format("2006-01-02")) + "     " + color.CyanString(*bucket.Name))
+		fmt.Println("   " + color.BlueString(bucket.CreationDate.Format("2006-01-02")) + "  " + color.CyanString(*bucket.Name))
 	}
 
 	c = color.New(color.FgYellow)

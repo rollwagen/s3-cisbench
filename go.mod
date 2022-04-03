@@ -8,6 +8,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/feature/s3/manager v1.11.3
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.26.3
 	github.com/aws/aws-sdk-go-v2/service/sts v1.16.3
+	github.com/briandowns/spinner v1.18.1
 	github.com/fatih/color v1.13.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/cobra v1.4.0
