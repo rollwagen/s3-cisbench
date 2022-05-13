@@ -67,5 +67,6 @@ Usage of json output with leveraging `jq` for further filtering:
 
 ```sh
 git clone https://github.com/rollwagen/s3-cisbench
+cd s3-cisbench
 make
 ```
