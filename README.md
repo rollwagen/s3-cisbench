@@ -12,26 +12,17 @@ practices, mainly CIS benchmark based.
 The AWS Benchmark section 'Storage' contains the S3 bucket related items,
 namely:
 
-### S3
+* 2.1.1 Ensure all S3 buckets employ encryption-at-rest
+* 2.1.2 Ensure S3 Bucket Policy is set to deny HTTP requests
+* 2.1.3 Ensure MFA Delete is enable on S3 buckets
+* 2.1.4 Ensure all data in Amazon S3 has been discovered (_out of scope_)
+* 2.1.5 Ensure that S3 Buckets are configured with 'Block public access'
+  * ✖ ✔ BlockPublicAcls (BPA)
+  * ✖ ✔ BlockPublicPolicy (BPP)
+  * ✖ ✔ IgnorePublicAcls (IPA)
+  * ✖ ✔ RestrictPublicBuckets (RPB)
 
-#### 2.1.1 Ensure all S3 buckets employ encryption-at-rest
-
-#### 2.1.2 Ensure S3 Bucket Policy is set to deny HTTP requests
-
-#### 2.1.3 Ensure MFA Delete is enable on S3 buckets
-
-#### 2.1.4 Ensure all data in Amazon S3 has been discovered
-
-This is out of scope for this tool.
-
-#### 2.1.5 Ensure that S3 Buckets are configured with 'Block public access'
-
-      ✖ ✔ BlockPublicAcls (BPA)
-      ✖ ✔ BlockPublicPolicy (BPP)
-      ✖ ✔ IgnorePublicAcls (IPA)
-      ✖ ✔ RestrictPublicBuckets (RPB)
-
-## Checks currently convered by this tool
+Checks currently convered by this tool
 
 > ⚠ ⚠  Again this is WIP
 
@@ -39,18 +30,11 @@ This is out of scope for this tool.
 
 [X] S3 bucket versioning enabled (non-CIS)
 
-## Build
-
-```sh
-git clone https://github.com/rollwagen/s3-cisbench
-make
-```
-
 ## Usage
 
 ```sh
 $ s3-cisbench --help
-s3-csibench is a tool that analyses S3 bucket against CIS benchmark rules. Full details can be found at https://github.com/rollwagen/s3-cisbench
+s3-csibench is a tool that analyses S3 bucket against CIS benchmark rules.
 
 Usage:
   s3-cisbench [flags]
@@ -71,10 +55,17 @@ Use "s3-cisbench [command] --help" for more information about a command.
 
 ### 'audit' Command Example
 
-<img src="docs/s3-cisbench.png">
+<img src="docs/s3-cisbench.png"  width="80%">
 
 ### 'audit -o json' Command Example with 'jq' processing
 
 Usage of json output with leveraging `jq` for further filtering:
 
 <img src="docs/s3-cisbench-json.png">
+
+## Build
+
+```sh
+git clone https://github.com/rollwagen/s3-cisbench
+make
+```
