@@ -18,7 +18,7 @@ var rootCmd = &cobra.Command{
 
 	// Uncomment the following line if your bare application has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("root called")
+		fmt.Println("Use --help for more information on how to use s3-cisbench.")
 	},
 }
 
