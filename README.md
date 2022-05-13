@@ -32,7 +32,7 @@ Checks currently convered by this tool
 
 ## Usage
 
-```sh
+```text
 $ s3-cisbench --help
 s3-csibench is a tool that analyses S3 bucket against CIS benchmark rules.
 
@@ -53,7 +53,7 @@ Flags:
 Use "s3-cisbench [command] --help" for more information about a command.
 ```
 
-### 'audit' Command Example
+### 'audit' Command Output Example
 
 <img src="docs/s3-cisbench.png"  width="80%">
 
