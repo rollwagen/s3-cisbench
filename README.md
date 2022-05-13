@@ -55,13 +55,13 @@ Use "s3-cisbench [command] --help" for more information about a command.
 
 ### 'audit' Command Output Example
 
-<img src="docs/s3-cisbench.png"  width="80%">
+<img src="docs/s3-cisbench.png" width="70%">
 
 ### 'audit -o json' Command Example with 'jq' processing
 
 Usage of json output with leveraging `jq` for further filtering:
 
-<img src="docs/s3-cisbench-json.png">
+<img src="docs/s3-cisbench-json.png"   width="95%>
 
 ## Build
 
