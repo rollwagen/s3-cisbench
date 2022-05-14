@@ -29,6 +29,7 @@ jobs:
         with:
           files: |
             bin/s3-cisbench-linux
+            bin/s3-cisbench-linux-arm64
             bin/s3-cisbench-darwin
-            bin/s3-cisbench-arm64
+            bin/s3-cisbench-darwin-m1
             bin/s3-cisbench.exe
