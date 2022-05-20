@@ -15,6 +15,13 @@ type BucketReport struct {
 	ServerSideEncryptionEnabled bool   `json:"serverSideEncryptionEnabled"`
 	VersioningEnabled           bool   `json:"versioningEnabled"`
 	MFADelete                   bool   `json:"mfaDelete"`
+
+	BlockPublicAccess struct {
+		BlockPublicAcls       bool `json:"blockPublicAcls"`
+		BlockPublicPolicy     bool `json:"blockPublicPolicy"`
+		IgnorePublicAcls      bool `json:"ignorePublicAcls"`
+		RestrictPublicBuckets bool `json:"restrictPublicBuckets"`
+	}
 }
 
 type BucketAuditor struct{}
@@ -56,7 +63,7 @@ func (auditor *BucketAuditor) Report(bucketName string, accountID string, region
 	encryptionOutput, err := s3Client.GetBucketEncryption(context.TODO(), encryptionInput)
 	if err != nil {
 		// api error ServerSideEncryptionConfigurationNotFoundError:
-		//The server side encryption configuration was not found
+		// The server side encryption configuration was not found
 		log.Debug("Error getting bucket encryption status.")
 		bucketReport.ServerSideEncryptionEnabled = false
 
@@ -65,10 +72,37 @@ func (auditor *BucketAuditor) Report(bucketName string, accountID string, region
 
 		for _, rule := range encryptionOutput.ServerSideEncryptionConfiguration.Rules {
 			if rule.ApplyServerSideEncryptionByDefault.SSEAlgorithm == "AES256" {
+				log.Debug("ApplyServerSideEncryptionByDefault.SSEAlgorithm is 'AES256'")
 			}
 			//c.Println(rule.ApplyServerSideEncryptionByDefault.KMSMasterKeyID)
 			//c.Println(rule.BucketKeyEnabled)
 		}
 	}
+
+	publicAccessBlockInput := &s3.GetPublicAccessBlockInput{Bucket: &bucketName, ExpectedBucketOwner: &accountID}
+	publicAccessBlockOutput, err := s3Client.GetPublicAccessBlock(context.TODO(), publicAccessBlockInput)
+	if err != nil {
+		log.Debug("Error getting public access block info.")
+	} else {
+		conf := publicAccessBlockOutput.PublicAccessBlockConfiguration
+		bucketReport.BlockPublicAccess.BlockPublicAcls = conf.BlockPublicAcls
+		bucketReport.BlockPublicAccess.BlockPublicPolicy = conf.BlockPublicPolicy
+		bucketReport.BlockPublicAccess.IgnorePublicAcls = conf.IgnorePublicAcls
+		bucketReport.BlockPublicAccess.RestrictPublicBuckets = conf.RestrictPublicBuckets
+
+	}
+
+	/*
+		bucketPolicyInput := &s3.GetBucketPolicyInput{Bucket: &bucketName, ExpectedBucketOwner: &accountID}
+		bucketPolicyOutput, err := s3Client.GetBucketPolicy(context.TODO(), bucketPolicyInput)
+		if err != nil {
+			log.Debug("Error getting bucket policy.")
+		} else {
+			fmt.Println("---")
+			fmt.Println(*bucketPolicyOutput.Policy)
+			fmt.Println("---")
+		}
+	*/
+
 	return bucketReport
 }
