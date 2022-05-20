@@ -2,13 +2,18 @@ package cmd
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
+	"os"
 	"time"
+
+	"github.com/aws/smithy-go"
+
+	"github.com/rollwagen/s3-cisbench/internal/output"
 
 	"github.com/briandowns/spinner"
 	"github.com/rollwagen/s3-cisbench/internal/audit"
 	"github.com/rollwagen/s3-cisbench/internal/aws"
-	"github.com/rollwagen/s3-cisbench/internal/output"
 	"github.com/spf13/cobra"
 )
 
@@ -26,7 +31,15 @@ var auditCmd = &cobra.Command{
 
 		var reports []audit.BucketReport
 		bucketAuditor := audit.New()
-		buckets, _ := aws.GetBuckets()
+		buckets, err := aws.GetBuckets()
+		if err != nil {
+			s.Stop()
+			var e smithy.APIError
+			if errors.As(err, &e) {
+				fmt.Printf("Error listing S3 buckets: %v: %v", e.ErrorCode(), e.ErrorMessage())
+			}
+			os.Exit(1)
+		}
 		s.Suffix = " Auditing buckets..."
 		for _, b := range buckets {
 			reports = append(reports, bucketAuditor.Report(b.Name, b.AccountID, b.Region))
@@ -36,6 +49,7 @@ var auditCmd = &cobra.Command{
 		switch {
 		case outputFormat == "txt":
 			output.PrintReport(reports)
+			//fmt.Println("...skipping output...")
 		case outputFormat == "json":
 			b, _ := json.MarshalIndent(reports, "", "  ")
 			fmt.Println(string(b))

@@ -30,7 +30,7 @@ func PrintReport(report []audit.BucketReport) {
 		_, _ = cCIS.Println("\tEnsure all S3 buckets employ encryption-at-rest [CIS 2.1.1]")
 
 		cBucket.Print(" " + GlyphHDotted)
-		if b.ServerSideEncryptionEnabled == true {
+		if b.ServerSideEncryptionEnabled {
 			//for _, rule := range encryptionOutput.ServerSideEncryptionConfiguration.Rules {
 			//	if rule.ApplyServerSideEncryptionByDefault.SSEAlgorithm == "AES256" {
 			c := color.New(color.FgHiGreen).Add(color.Bold)
@@ -51,7 +51,7 @@ func PrintReport(report []audit.BucketReport) {
 		_, _ = cCIS.Println("\tS3 bucket versioning enabled (non-CIS)")
 
 		cBucket.Print(" " + GlyphHDotted)
-		if b.VersioningEnabled == true {
+		if b.VersioningEnabled {
 			c := color.New(color.FgHiGreen).Add(color.Bold)
 			_, _ = c.Print("\t\t\uf454 ")
 			c = color.New(color.FgGreen)
@@ -63,7 +63,70 @@ func PrintReport(report []audit.BucketReport) {
 			_, _ = c.Println(" Versioning is not enabled")
 		}
 
+		// CIS 2.1.5 Ensure that S3 Buckets are configured with 'Block public access'
+		/*
+		 * ✖ ✔ BlockPublicAcls (BPA)
+		 * ✖ ✔ BlockPublicPolicy (BPP)
+		 * ✖ ✔ IgnorePublicAcls (IPA)
+		 * ✖ ✔ RestrictPublicBuckets (RPB)
+		 */
+		cBucket.Print(" " + GlyphHDotted)
+		_, _ = cCIS.Println("\tEnsure that S3 Buckets are configured with 'Block public access' [CIS 2.1.5]")
+		cBucket.Print(" " + GlyphHDotted)
+		if b.BlockPublicAccess.BlockPublicAcls {
+			c := color.New(color.FgHiGreen).Add(color.Bold)
+			_, _ = c.Print("\t\t✔")
+			c = color.New(color.FgGreen)
+			_, _ = c.Println(" Block Public ACLs is enabled")
+		} else {
+			c := color.New(color.FgHiRed).Add(color.Bold)
+			_, _ = c.Print("\t\t✖")
+			c = color.New(color.FgRed)
+			_, _ = c.Println(" Block Public ACLs is disabled")
+		}
+
+		cBucket.Print(" " + GlyphHDotted)
+		if b.BlockPublicAccess.BlockPublicPolicy {
+			c := color.New(color.FgHiGreen).Add(color.Bold)
+			_, _ = c.Print("\t\t✔")
+			c = color.New(color.FgGreen)
+			_, _ = c.Println(" Block Public Policy is enabled")
+		} else {
+			c := color.New(color.FgHiRed).Add(color.Bold)
+			_, _ = c.Print("\t\t✖")
+			c = color.New(color.FgRed)
+			_, _ = c.Println(" Block Public Policy is disabled")
+		}
+
+		cBucket.Print(" " + GlyphHDotted)
+		if b.BlockPublicAccess.IgnorePublicAcls {
+			c := color.New(color.FgHiGreen).Add(color.Bold)
+			_, _ = c.Print("\t\t✔")
+			c = color.New(color.FgGreen)
+			_, _ = c.Println(" Ignore Public ACLs is enabled")
+		} else {
+			c := color.New(color.FgHiRed).Add(color.Bold)
+			_, _ = c.Print("\t\t✖")
+			c = color.New(color.FgRed)
+			_, _ = c.Println(" Ignore Public ACLs is disabled")
+		}
+
+		cBucket.Print(" " + GlyphHDotted)
+		if b.BlockPublicAccess.RestrictPublicBuckets {
+			c := color.New(color.FgHiGreen).Add(color.Bold)
+			_, _ = c.Print("\t\t✔")
+			c = color.New(color.FgGreen)
+			_, _ = c.Println(" Restrict Public Access is enabled")
+		} else {
+			c := color.New(color.FgHiRed).Add(color.Bold)
+			_, _ = c.Print("\t\t✖")
+			c = color.New(color.FgRed)
+			_, _ = c.Println(" Restrict Public Access is disabled")
+		}
+
+		// bucket report END
 		cBucket.Println(" " + GlyphVDotted)
+
 		//color.Green("Ξ" + "⚠⚠" + "✗✗" + "☡☡" + "∆∆" + "≈≈")
 	}
 }
