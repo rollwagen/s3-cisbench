@@ -30,6 +30,8 @@ Checks currently convered by this tool
 
 [X] S3 bucket versioning enabled (non-CIS)
 
+[X] Ensure that S3 Buckets are configured with 'Block public access' [CIS 2.1.5]
+
 ## Usage
 
 ```text
