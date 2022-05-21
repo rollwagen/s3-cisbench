@@ -38,7 +38,9 @@ func PrintAllBuckets() {
 	if err != nil {
 		var e smithy.APIError
 		if errors.As(err, &e) {
-			fmt.Printf("Error listing S3 buckets: %v: %v", e.ErrorCode(), e.ErrorMessage())
+			fmt.Printf(color.RedString("Error listing S3 buckets: ")+"%v - %v", e.ErrorCode(), e.ErrorMessage())
+		} else {
+			fmt.Printf(color.RedString("Unexpected error: ")+"%v", err)
 		}
 		os.Exit(1)
 	}
