@@ -46,6 +46,23 @@ func PrintReport(report []audit.BucketReport) {
 			_, _ = c.Println(" No server side encryption found")
 		}
 
+		// CIS 2.1.2 - Ensure S3 Bucket Policy is set to deny HTTP requests
+		cBucket.Print(" " + GlyphHDotted)
+		cCIS = color.New(color.FgHiCyan)
+		_, _ = cCIS.Println("\tEnsure S3 Bucket Policy is set to deny HTTP requests [CIS 2.1.2]")
+		cBucket.Print(" " + GlyphHDotted)
+		if b.PolicyDenyHTTP {
+			c := color.New(color.FgHiGreen).Add(color.Bold)
+			_, _ = c.Print("\t\t\uf023 ")
+			c = color.New(color.FgGreen)
+			_, _ = c.Println(" Bucket policy to deny HTTP requests is present")
+		} else {
+			c := color.New(color.FgHiRed).Add(color.Bold)
+			_, _ = c.Print("\t\t\uf09c") //cBucket.Print("\t\t\uf071")
+			c = color.New(color.FgRed)
+			_, _ = c.Println(" No Bucket policy to deny HTTP requests found")
+		}
+
 		// Non CIS - Versioning enabled
 		cBucket.Print(" " + GlyphHDotted)
 		_, _ = cCIS.Println("\tS3 bucket versioning enabled (non-CIS)")
