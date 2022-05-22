@@ -10,9 +10,9 @@ import (
 )
 
 type Bucket struct {
-	Name      string
-	AccountID string
-	Region    string
+	Name      string `json:"bucketName"`
+	AccountID string `json:"accountId"`
+	Region    string `json:"region"`
 }
 
 func GetBuckets() ([]Bucket, error) {
