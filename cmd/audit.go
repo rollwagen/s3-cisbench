@@ -7,11 +7,11 @@ import (
 	"os"
 	"time"
 
+	"github.com/rollwagen/s3-cisbench/internal/output"
+
 	"github.com/fatih/color"
 
 	"github.com/aws/smithy-go"
-
-	"github.com/rollwagen/s3-cisbench/internal/output"
 
 	"github.com/briandowns/spinner"
 	"github.com/rollwagen/s3-cisbench/internal/audit"
@@ -53,7 +53,6 @@ var auditCmd = &cobra.Command{
 		switch {
 		case outputFormat == "txt":
 			output.PrintReport(reports)
-			//fmt.Println("...skipping output...")
 		case outputFormat == "json":
 			b, _ := json.MarshalIndent(reports, "", "  ")
 			fmt.Println(string(b))
