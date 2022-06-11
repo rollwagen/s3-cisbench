@@ -16,7 +16,6 @@ type Bucket struct {
 }
 
 func GetBuckets() ([]Bucket, error) {
-
 	var buckets []Bucket
 
 	ctx := context.TODO()
