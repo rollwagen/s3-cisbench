@@ -23,7 +23,17 @@ namely:
   * ✖ ✔ RestrictPublicBuckets (RPB)
 
 Currently known limitations:
+
 * encryption at rest only checks for default AES256 algorithm and reports false otherwise
+
+> ⚠ ⚠  Again this is WIP
+
+[X] Ensure all S3 buckets employ encryption-at-rest [CIS 2.1.1]
+
+[X] S3 bucket versioning enabled (non-CIS)
+
+[X] Ensure that S3 Buckets are configured with 'Block public access' [CIS 2.1.5]
+>>>>>>> Stashed changes
 
 ## Usage
 
