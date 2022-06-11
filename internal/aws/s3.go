@@ -25,10 +25,11 @@ func GetBuckets() ([]Bucket, error) {
 		return nil, err
 	}
 
+	log.Debug("Listing buckets")
 	s3Client := s3.NewFromConfig(cfg)
 	result, err := s3Client.ListBuckets(ctx, &s3.ListBucketsInput{})
 	if err != nil {
-		log.Debugf("Error listing S3 buckets: %v", err)
+		log.Errorf("Error listing S3 buckets: %v", err)
 		return nil, err
 	}
 

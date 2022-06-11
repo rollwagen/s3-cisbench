@@ -16,6 +16,7 @@ import (
 	"github.com/briandowns/spinner"
 	"github.com/rollwagen/s3-cisbench/internal/audit"
 	"github.com/rollwagen/s3-cisbench/internal/aws"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -27,9 +28,11 @@ var auditCmd = &cobra.Command{
 	Short: "Audit S3 buckets against applicable CIS benchmark items",
 	Long:  `Audit S3 buckets against applicable CIS benchmark items`,
 	Run: func(cmd *cobra.Command, args []string) {
-		s := spinner.New(spinner.CharSets[11], 80*time.Millisecond)
+		s := spinner.New(spinner.CharSets[11], 60*time.Millisecond)
+		if !debug { // no spinner when debug output enabled
+			s.Start()
+		}
 		s.Suffix = " Getting S3 buckets..."
-		s.Start()
 
 		var reports []audit.BucketReport
 		bucketAuditor := audit.New()
@@ -38,16 +41,18 @@ var auditCmd = &cobra.Command{
 			s.Stop()
 			var e smithy.APIError
 			if errors.As(err, &e) {
-				fmt.Printf("Error listing S3 buckets: %v: %v", e.ErrorCode(), e.ErrorMessage())
+				log.Errorf("Error listing S3 buckets: %v: %v", e.ErrorCode(), e.ErrorMessage())
 			} else {
-				fmt.Printf(color.RedString("Unexpected error: ")+"%v", err)
+				log.Errorf(color.RedString("Unexpected error: ")+"%v", err)
 			}
 			os.Exit(1)
 		}
 		s.Suffix = " Auditing buckets..."
-		for _, b := range buckets {
+		for i, b := range buckets {
+			s.Suffix = fmt.Sprintf(" Auditing buckets: [%d/%d] %s...", i, len(buckets), b.Name)
 			reports = append(reports, bucketAuditor.Report(b.Name, b.AccountID, b.Region))
 		}
+		s.Suffix = " Printing report..."
 		s.Stop()
 
 		switch {
@@ -58,21 +63,13 @@ var auditCmd = &cobra.Command{
 			fmt.Println(string(b))
 		case outputFormat == "csv":
 			fmt.Println("TODO csv output")
+		case outputFormat == "noout":
+			log.Debug("Omitting output because set to 'noout'")
 		}
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(auditCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// auditCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// auditCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	auditCmd.Flags().StringVarP(&outputFormat, "output", "o", "txt", "Define outputFormat report (txt, csv, json)")
+	auditCmd.Flags().StringVarP(&outputFormat, "output", "o", "txt", "Define outputFormat report (txt, csv, json, noout)")
 }
