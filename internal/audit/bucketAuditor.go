@@ -17,7 +17,7 @@ import (
 type statement struct {
 	Sid    string `json:"Sid,omitempty"` // statement ID
 	Effect string `json:"Effect"`        // Allow or Deny
-	//Principal    map[string]Value `json:"Principal,omitempty"`    // principal
+	// Principal    map[string]Value `json:"Principal,omitempty"`    // principal
 	Principal    json.RawMessage  `json:"Principal,omitempty"`    // principal
 	NotPrincipal map[string]Value `json:"NotPrincipal,omitempty"` // exception to a list of principals
 	Action       Value            `json:"Action"`                 // allowed or denied action
@@ -40,7 +40,6 @@ type policyDocument struct {
 type Value []string
 
 func (value *Value) UnmarshalJSON(b []byte) error {
-
 	var raw interface{}
 	err := json.Unmarshal(b, &raw)
 	if err != nil {
@@ -90,8 +89,7 @@ func New() *BucketAuditor {
 }
 
 func (auditor *BucketAuditor) Report(bucketName string, accountID string, region string) BucketReport {
-
-	//log.SetLevel(log.DebugLevel)
+	// log.SetLevel(log.DebugLevel)
 
 	bucketReport := BucketReport{Name: bucketName, AccountID: accountID, Region: region}
 
@@ -133,8 +131,8 @@ func (auditor *BucketAuditor) Report(bucketName string, accountID string, region
 			if rule.ApplyServerSideEncryptionByDefault.SSEAlgorithm == "AES256" {
 				log.Debug("ApplyServerSideEncryptionByDefault.SSEAlgorithm is 'AES256'")
 			}
-			//c.Println(rule.ApplyServerSideEncryptionByDefault.KMSMasterKeyID)
-			//c.Println(rule.BucketKeyEnabled)
+			// c.Println(rule.ApplyServerSideEncryptionByDefault.KMSMasterKeyID)
+			// c.Println(rule.BucketKeyEnabled)
 		}
 	}
 
@@ -170,15 +168,13 @@ func (auditor *BucketAuditor) Report(bucketName string, accountID string, region
 		if err != nil {
 			log.Errorf("Error unmarshalling json %v", err)
 		}
-		//fmt.Printf("Processing policy with id: %v\n", policyDocument.ID)
+		// fmt.Printf("Processing policy with id: %v\n", policyDocument.ID)
 
 		for _, statement := range policyDocument.Statements {
 			// "Effect": "Deny" ?
 			if statement.Effect == "Deny" {
-
 				// -  "condition" (1/2): { "Bool"  ?
 				for conditionOperator, rawJSON := range statement.Condition {
-
 					if conditionOperator == "Bool" {
 						denyUnsecureTransport := false
 						conditionKeyValue := &map[string]string{}
@@ -216,8 +212,8 @@ func (auditor *BucketAuditor) Report(bucketName string, accountID string, region
 						}
 
 						// -  "Resource":  "Resource":"<bucket arn>/*" + "Resource":"<bucket arn>" ?
-						var resourceBucket = false
-						var resourceBucketContent = false
+						resourceBucket := false
+						resourceBucketContent := false
 						arn := "arn:aws:s3:::" + bucketName
 						for _, r := range statement.Resource {
 							if strings.HasSuffix(r, "*") && !resourceBucketContent {

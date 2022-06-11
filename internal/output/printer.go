@@ -8,7 +8,6 @@ import (
 )
 
 func PrintReport(report []audit.BucketReport) {
-
 	type Glyph string
 	const (
 		GlyphVLine   Glyph = "│" // "\uf6d7"
@@ -31,7 +30,7 @@ func PrintReport(report []audit.BucketReport) {
 
 		cBucket.Print(" " + GlyphHDotted)
 		if b.ServerSideEncryptionEnabled {
-			//for _, rule := range encryptionOutput.ServerSideEncryptionConfiguration.Rules {
+			// for _, rule := range encryptionOutput.ServerSideEncryptionConfiguration.Rules {
 			//	if rule.ApplyServerSideEncryptionByDefault.SSEAlgorithm == "AES256" {
 			c := color.New(color.FgHiGreen).Add(color.Bold)
 			_, _ = c.Print("\t\t\ufc98 ")
@@ -41,7 +40,7 @@ func PrintReport(report []audit.BucketReport) {
 			_, _ = c.Println(" Server side encryption is enabled")
 		} else {
 			c := color.New(color.FgHiRed).Add(color.Bold)
-			_, _ = c.Print("\t\t\uf73f") //cBucket.Print("\t\t\uf071")
+			_, _ = c.Print("\t\t\uf73f") // cBucket.Print("\t\t\uf071")
 			c = color.New(color.FgRed)
 			_, _ = c.Println(" No server side encryption found")
 		}
@@ -58,7 +57,7 @@ func PrintReport(report []audit.BucketReport) {
 			_, _ = c.Println(" Bucket policy to deny HTTP requests is present")
 		} else {
 			c := color.New(color.FgHiRed).Add(color.Bold)
-			_, _ = c.Print("\t\t\uf09c") //cBucket.Print("\t\t\uf071")
+			_, _ = c.Print("\t\t\uf09c") // cBucket.Print("\t\t\uf071")
 			c = color.New(color.FgRed)
 			_, _ = c.Println(" No Bucket policy to deny HTTP requests found")
 		}
@@ -75,7 +74,7 @@ func PrintReport(report []audit.BucketReport) {
 			_, _ = c.Println(" S3 bucket has versioning enabled")
 		} else {
 			c := color.New(color.FgHiRed).Add(color.Bold)
-			_, _ = c.Print("\t\t\uf73f") //cBucket.Print("\t\t\uf071")
+			_, _ = c.Print("\t\t\uf73f") // cBucket.Print("\t\t\uf071")
 			c = color.New(color.FgRed)
 			_, _ = c.Println(" Versioning is not enabled")
 		}
@@ -144,6 +143,6 @@ func PrintReport(report []audit.BucketReport) {
 		// bucket report END
 		cBucket.Println(" " + GlyphVDotted)
 
-		//color.Green("Ξ" + "⚠⚠" + "✗✗" + "☡☡" + "∆∆" + "≈≈")
+		// color.Green("Ξ" + "⚠⚠" + "✗✗" + "☡☡" + "∆∆" + "≈≈")
 	}
 }
