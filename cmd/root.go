@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -25,6 +26,11 @@ var rootCmd = &cobra.Command{
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
+	rootCmd.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
+		setUpLogging(debug)
+		return nil
+	}
+
 	err := rootCmd.Execute()
 	if err != nil {
 		os.Exit(1)
@@ -39,4 +45,24 @@ func init() {
 
 	// Cobra also supports local flags, which will only run when this action is called directly.
 	// Example rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+func setUpLogging(debug bool) {
+	if debug {
+		logrus.SetLevel(logrus.DebugLevel)
+		logrus.SetFormatter(&logrus.TextFormatter{
+			DisableColors: false,
+			FullTimestamp: true,
+		})
+	} else {
+		logrus.SetLevel(logrus.WarnLevel)
+		plainFormatter := new(logrusPlainFormatter)
+		logrus.SetFormatter(plainFormatter)
+	}
+}
+
+type logrusPlainFormatter struct{}
+
+func (f *logrusPlainFormatter) Format(entry *logrus.Entry) ([]byte, error) {
+	return []byte(fmt.Sprintf("%s\n", entry.Message)), nil
 }

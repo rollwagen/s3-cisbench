@@ -26,14 +26,13 @@ var listCmd = &cobra.Command{
 }
 
 func PrintAllBuckets() {
-	log.SetLevel(log.DebugLevel)
-
 	ctx := context.TODO()
 	cfg, err := config.LoadDefaultConfig(ctx)
 	if err != nil {
 		log.Fatalf("Failed to load AWS SDK configuration: %v", err)
 	}
 	s3Client := s3.NewFromConfig(cfg)
+	log.Debug("Listing buckets")
 	result, err := s3Client.ListBuckets(ctx, &s3.ListBucketsInput{})
 	if err != nil {
 		var e smithy.APIError
@@ -44,6 +43,8 @@ func PrintAllBuckets() {
 		}
 		os.Exit(1)
 	}
+
+	log.Infof("Received %d buckets", len(result.Buckets))
 
 	c := color.New(color.FgYellow).Add(color.Underline)
 	_, _ = c.Println("Creation date  Bucket name")
@@ -57,13 +58,4 @@ func PrintAllBuckets() {
 
 func init() {
 	rootCmd.AddCommand(listCmd)
-
-	// Here you will define your flags and configuration settings.
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// listCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// listCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

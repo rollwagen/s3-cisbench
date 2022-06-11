@@ -89,7 +89,9 @@ func New() *BucketAuditor {
 }
 
 func (auditor *BucketAuditor) Report(bucketName string, accountID string, region string) BucketReport {
-	// log.SetLevel(log.DebugLevel)
+	logBucket := log.WithFields(log.Fields{
+		"bucket_name": bucketName,
+	})
 
 	bucketReport := BucketReport{Name: bucketName, AccountID: accountID, Region: region}
 
@@ -100,17 +102,17 @@ func (auditor *BucketAuditor) Report(bucketName string, accountID string, region
 	input := &s3.GetBucketVersioningInput{Bucket: &bucketName, ExpectedBucketOwner: &accountID}
 	versioningOutput, err := s3Client.GetBucketVersioning(context.TODO(), input)
 	if err != nil {
-		log.Errorf("Error getting bucket versioning status: %v", err)
+		logBucket.Debugf("Error getting versioning status for bucket %s: %v", bucketName, err)
 	} else {
 
 		versioningStatus := versioningOutput.Status
-		log.Debug("Versioning status: " + versioningStatus)
+		logBucket.Debugf("Versioning status: %#v", versioningStatus)
 		if versioningStatus == "Enabled" {
 			bucketReport.VersioningEnabled = true
 		}
 
 		mfaDelete := versioningOutput.MFADelete
-		log.Debug("MFA Delete: " + mfaDelete)
+		logBucket.Debugf("MFA Delete: %#v", mfaDelete)
 		if mfaDelete == "Enabled" {
 			bucketReport.MFADelete = true
 		}
@@ -121,7 +123,7 @@ func (auditor *BucketAuditor) Report(bucketName string, accountID string, region
 	if err != nil {
 		// api error ServerSideEncryptionConfigurationNotFoundError:
 		// The server side encryption configuration was not found
-		log.Debug("Error getting bucket encryption status.")
+		logBucket.Debug("Error getting bucket encryption status.")
 		bucketReport.ServerSideEncryptionEnabled = false
 
 	} else {
@@ -129,7 +131,7 @@ func (auditor *BucketAuditor) Report(bucketName string, accountID string, region
 
 		for _, rule := range encryptionOutput.ServerSideEncryptionConfiguration.Rules {
 			if rule.ApplyServerSideEncryptionByDefault.SSEAlgorithm == "AES256" {
-				log.Debug("ApplyServerSideEncryptionByDefault.SSEAlgorithm is 'AES256'")
+				logBucket.Info("SSEAlgorithm is 'AES256'")
 			}
 			// c.Println(rule.ApplyServerSideEncryptionByDefault.KMSMasterKeyID)
 			// c.Println(rule.BucketKeyEnabled)
@@ -139,7 +141,7 @@ func (auditor *BucketAuditor) Report(bucketName string, accountID string, region
 	publicAccessBlockInput := &s3.GetPublicAccessBlockInput{Bucket: &bucketName, ExpectedBucketOwner: &accountID}
 	publicAccessBlockOutput, err := s3Client.GetPublicAccessBlock(context.TODO(), publicAccessBlockInput)
 	if err != nil {
-		log.Debug("Error getting public access block info.")
+		logBucket.Debug("Error getting public access block info.")
 	} else {
 		conf := publicAccessBlockOutput.PublicAccessBlockConfiguration
 		bucketReport.BlockPublicAccess.BlockPublicAcls = conf.BlockPublicAcls
@@ -160,13 +162,13 @@ func (auditor *BucketAuditor) Report(bucketName string, accountID string, region
 	if err != nil {
 		var ae smithy.APIError
 		if errors.As(err, &ae) {
-			log.Debugf("Error code: %s, message: %s", ae.ErrorCode(), ae.ErrorMessage())
+			logBucket.Debugf("Error: %s:  %s", ae.ErrorCode(), ae.ErrorMessage())
 		}
 	} else {
 		var policyDocument policyDocument
 		err = json.Unmarshal([]byte(*bucketPolicyOutput.Policy), &policyDocument)
 		if err != nil {
-			log.Errorf("Error unmarshalling json %v", err)
+			logBucket.Errorf("Error unmarshalling json %v", err)
 		}
 		// fmt.Printf("Processing policy with id: %v\n", policyDocument.ID)
 
@@ -183,7 +185,7 @@ func (auditor *BucketAuditor) Report(bucketName string, accountID string, region
 							boolValue, _ := strconv.ParseBool(value)
 							//- condition (2/2) { "aws:SecureTransport": true ?
 							if !boolValue {
-								log.Debugln("\t...\"aws:SecureTransport\" is enforced.")
+								logBucket.Debug("\"aws:SecureTransport\" is enforced.")
 								denyUnsecureTransport = true
 							}
 						}
