@@ -51,8 +51,11 @@ func setUpLogging(debug bool) {
 	if debug {
 		logrus.SetLevel(logrus.DebugLevel)
 		logrus.SetFormatter(&logrus.TextFormatter{
-			DisableColors: false,
-			FullTimestamp: true,
+			DisableColors:          false,
+			FullTimestamp:          true,
+			TimestampFormat:        "15:04:05",
+			DisableLevelTruncation: true,
+			PadLevelText:           true,
 		})
 	} else {
 		logrus.SetLevel(logrus.WarnLevel)
