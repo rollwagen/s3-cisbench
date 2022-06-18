@@ -35,8 +35,7 @@ type policyDocument struct {
 	Statements []statement `json:"statement"`
 }
 
-// AWS allows string or []string as value
-// convert everything to []string to avoid casting
+// Value is needed b/c AWS allows string or []string as value; convert everything to []string to avoid casting
 type Value []string
 
 func (value *Value) UnmarshalJSON(b []byte) error {
@@ -58,7 +57,7 @@ func (value *Value) UnmarshalJSON(b []byte) error {
 		}
 		p = items
 	default:
-		return fmt.Errorf("invalid %s value element: allowed is only string or []string", value)
+		return fmt.Errorf("invalid %v value element: allowed is only string or []string", value)
 	}
 
 	*value = p

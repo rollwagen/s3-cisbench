@@ -12,7 +12,7 @@ import (
 
 type TextPrinter struct{}
 
-func (r TextPrinter) PrintReport(report []audit.BucketReport, w io.Writer) error {
+func (r *TextPrinter) PrintReport(report []audit.BucketReport, w io.Writer) error {
 	if w != os.Stdout {
 		return errors.New("this printer only support writing to stdout")
 	}
@@ -28,16 +28,23 @@ func (r TextPrinter) PrintReport(report []audit.BucketReport, w io.Writer) error
 	for _, b := range report {
 		fmt.Println()
 
-		// Bucket name
 		cBucket := color.New(color.FgHiBlue).Add(color.Bold)
-		_, _ = cBucket.Println(" \uF5A7 " + b.Name)
+		colorBucketPrintln := func(a any) {
+			_, _ = cBucket.Println(a)
+		}
+		colorBucketPrint := func(a any) {
+			_, _ = cBucket.Print(a)
+		}
+
+		// Bucket name
+		colorBucketPrintln(" \uF5A7 " + b.Name)
 
 		// CIS 2.1.1 - ServerSideEncryptionEnabled
-		cBucket.Print(" " + GlyphHDotted)
+		colorBucketPrint(" " + GlyphHDotted)
 		cCIS := color.New(color.FgHiCyan)
 		_, _ = cCIS.Println("\tEnsure all S3 buckets employ encryption-at-rest [CIS 2.1.1]")
 
-		cBucket.Print(" " + GlyphHDotted)
+		colorBucketPrint(" " + GlyphHDotted)
 		if b.ServerSideEncryptionEnabled {
 			// for _, rule := range encryptionOutput.ServerSideEncryptionConfiguration.Rules {
 			//	if rule.ApplyServerSideEncryptionByDefault.SSEAlgorithm == "AES256" {
@@ -55,10 +62,10 @@ func (r TextPrinter) PrintReport(report []audit.BucketReport, w io.Writer) error
 		}
 
 		// CIS 2.1.2 - Ensure S3 Bucket Policy is set to deny HTTP requests
-		cBucket.Print(" " + GlyphHDotted)
+		colorBucketPrint(" " + GlyphHDotted)
 		cCIS = color.New(color.FgHiCyan)
 		_, _ = cCIS.Println("\tEnsure S3 Bucket Policy is set to deny HTTP requests [CIS 2.1.2]")
-		cBucket.Print(" " + GlyphHDotted)
+		colorBucketPrint(" " + GlyphHDotted)
 		if b.PolicyDenyHTTP {
 			c := color.New(color.FgHiGreen).Add(color.Bold)
 			_, _ = c.Print("\t\t\uf023 ")
@@ -72,10 +79,10 @@ func (r TextPrinter) PrintReport(report []audit.BucketReport, w io.Writer) error
 		}
 
 		// Non CIS - Versioning enabled
-		cBucket.Print(" " + GlyphHDotted)
+		colorBucketPrint(" " + GlyphHDotted)
 		_, _ = cCIS.Println("\tS3 bucket versioning enabled (non-CIS)")
 
-		cBucket.Print(" " + GlyphHDotted)
+		colorBucketPrint(" " + GlyphHDotted)
 		if b.VersioningEnabled {
 			c := color.New(color.FgHiGreen).Add(color.Bold)
 			_, _ = c.Print("\t\t\uf454 ")
@@ -95,9 +102,9 @@ func (r TextPrinter) PrintReport(report []audit.BucketReport, w io.Writer) error
 		 * ✖ ✔ IgnorePublicAcls (IPA)
 		 * ✖ ✔ RestrictPublicBuckets (RPB)
 		 */
-		cBucket.Print(" " + GlyphHDotted)
+		colorBucketPrint(" " + GlyphHDotted)
 		_, _ = cCIS.Println("\tEnsure that S3 Buckets are configured with 'Block public access' [CIS 2.1.5]")
-		cBucket.Print(" " + GlyphHDotted)
+		colorBucketPrint(" " + GlyphHDotted)
 		if b.BlockPublicAccess.BlockPublicAcls {
 			c := color.New(color.FgHiGreen).Add(color.Bold)
 			_, _ = c.Print("\t\t✔")
@@ -110,7 +117,7 @@ func (r TextPrinter) PrintReport(report []audit.BucketReport, w io.Writer) error
 			_, _ = c.Println(" Block Public ACLs is disabled")
 		}
 
-		cBucket.Print(" " + GlyphHDotted)
+		colorBucketPrint(" " + GlyphHDotted)
 		if b.BlockPublicAccess.BlockPublicPolicy {
 			c := color.New(color.FgHiGreen).Add(color.Bold)
 			_, _ = c.Print("\t\t✔")
@@ -123,7 +130,7 @@ func (r TextPrinter) PrintReport(report []audit.BucketReport, w io.Writer) error
 			_, _ = c.Println(" Block Public Policy is disabled")
 		}
 
-		cBucket.Print(" " + GlyphHDotted)
+		colorBucketPrint(" " + GlyphHDotted)
 		if b.BlockPublicAccess.IgnorePublicAcls {
 			c := color.New(color.FgHiGreen).Add(color.Bold)
 			_, _ = c.Print("\t\t✔")
@@ -136,7 +143,7 @@ func (r TextPrinter) PrintReport(report []audit.BucketReport, w io.Writer) error
 			_, _ = c.Println(" Ignore Public ACLs is disabled")
 		}
 
-		cBucket.Print(" " + GlyphHDotted)
+		colorBucketPrint(" " + GlyphHDotted)
 		if b.BlockPublicAccess.RestrictPublicBuckets {
 			c := color.New(color.FgHiGreen).Add(color.Bold)
 			_, _ = c.Print("\t\t✔")
@@ -150,7 +157,7 @@ func (r TextPrinter) PrintReport(report []audit.BucketReport, w io.Writer) error
 		}
 
 		// bucket report END
-		cBucket.Println(" " + GlyphVDotted)
+		colorBucketPrintln(" " + GlyphVDotted)
 
 		// color.Green("Ξ" + "⚠⚠" + "✗✗" + "☡☡" + "∆∆" + "≈≈")
 	}
