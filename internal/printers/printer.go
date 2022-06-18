@@ -1,13 +1,22 @@
-package output
+package printers
 
 import (
+	"errors"
 	"fmt"
+	"io"
+	"os"
 
 	"github.com/fatih/color"
 	"github.com/rollwagen/s3-cisbench/internal/audit"
 )
 
-func PrintReport(report []audit.BucketReport) {
+type TextPrinter struct{}
+
+func (r TextPrinter) PrintReport(report []audit.BucketReport, w io.Writer) error {
+	if w != os.Stdout {
+		return errors.New("this printer only support writing to stdout")
+	}
+
 	type Glyph string
 	const (
 		GlyphVLine   Glyph = "│" // "\uf6d7"
@@ -145,4 +154,5 @@ func PrintReport(report []audit.BucketReport) {
 
 		// color.Green("Ξ" + "⚠⚠" + "✗✗" + "☡☡" + "∆∆" + "≈≈")
 	}
+	return nil
 }

@@ -1,13 +1,12 @@
 package cmd
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
 	"time"
 
-	"github.com/rollwagen/s3-cisbench/internal/output"
+	"github.com/rollwagen/s3-cisbench/internal/printers"
 
 	"github.com/fatih/color"
 
@@ -55,17 +54,20 @@ var auditCmd = &cobra.Command{
 		s.Suffix = " Printing report..."
 		s.Stop()
 
+		writer := os.Stdout
+		var p printers.BucketReportPrinter
 		switch {
 		case outputFormat == "txt":
-			output.PrintReport(reports)
+			p = printers.TextPrinter{}
 		case outputFormat == "json":
-			b, _ := json.MarshalIndent(reports, "", "  ")
-			fmt.Println(string(b))
+			p = printers.JSONPrinter{}
 		case outputFormat == "csv":
-			fmt.Println("TODO csv output")
+			p = printers.CSVPrinter{}
 		case outputFormat == "noout":
-			log.Debug("Omitting output because set to 'noout'")
+			p = printers.NooutPrinter{}
 		}
+
+		_ = p.PrintReport(reports, writer)
 	},
 }
 

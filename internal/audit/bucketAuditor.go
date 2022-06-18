@@ -162,7 +162,7 @@ func (auditor *BucketAuditor) Report(bucketName string, accountID string, region
 	if err != nil {
 		var ae smithy.APIError
 		if errors.As(err, &ae) {
-			logBucket.Debugf("Error: %s:  %s", ae.ErrorCode(), ae.ErrorMessage())
+			logBucket.Debugf("%s:  %s", ae.ErrorCode(), ae.ErrorMessage())
 		}
 	} else {
 		var policyDocument policyDocument
@@ -170,8 +170,8 @@ func (auditor *BucketAuditor) Report(bucketName string, accountID string, region
 		if err != nil {
 			logBucket.Errorf("Error unmarshalling json %v", err)
 		}
-		// fmt.Printf("Processing policy with id: %v\n", policyDocument.ID)
-
+		logPolicy := logBucket.WithFields(log.Fields{"policy_id": policyDocument.ID})
+		logPolicy.Debugf("Processing policy...")
 		for _, statement := range policyDocument.Statements {
 			// "Effect": "Deny" ?
 			if statement.Effect == "Deny" {
@@ -185,7 +185,7 @@ func (auditor *BucketAuditor) Report(bucketName string, accountID string, region
 							boolValue, _ := strconv.ParseBool(value)
 							//- condition (2/2) { "aws:SecureTransport": true ?
 							if !boolValue {
-								logBucket.Debug("\"aws:SecureTransport\" is enforced.")
+								logPolicy.Debug("aws:SecureTransport is enforced.")
 								denyUnsecureTransport = true
 							}
 						}
@@ -194,6 +194,7 @@ func (auditor *BucketAuditor) Report(bucketName string, accountID string, region
 						s3ActionsCovered := false
 						for _, action := range statement.Action {
 							if action == "*" || action == "s3:*" {
+								logPolicy.Debug("s3ActionsCovered is true")
 								s3ActionsCovered = true
 							}
 						}
@@ -208,6 +209,7 @@ func (auditor *BucketAuditor) Report(bucketName string, accountID string, region
 							_ = json.Unmarshal(statement.Principal, &principal)
 							for key, value := range principal {
 								if key == "AWS" && value == "*" {
+									logPolicy.Debug("principalCovered is true")
 									principalCovered = true
 								}
 							}
@@ -225,8 +227,10 @@ func (auditor *BucketAuditor) Report(bucketName string, accountID string, region
 							}
 						}
 						bucketResourcesCovered := resourceBucket && resourceBucketContent
+						logPolicy.Debugf("bucketResourcesCovered = %v", bucketResourcesCovered)
 
 						bucketReport.PolicyDenyHTTP = denyUnsecureTransport && s3ActionsCovered && principalCovered && bucketResourcesCovered
+						logPolicy.Debugf("policyDenyHTTP = %v", bucketReport.PolicyDenyHTTP)
 					}
 				}
 			}
