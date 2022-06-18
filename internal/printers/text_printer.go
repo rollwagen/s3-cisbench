@@ -157,7 +157,7 @@ func (r *TextPrinter) PrintReport(report []audit.BucketReport, w io.Writer) erro
 		}
 
 		// bucket report END
-		colorBucketPrintln(" " + GlyphVDotted)
+		colorBucketPrintln(" " + GlyphVDotted + "\n")
 
 		// color.Green("Ξ" + "⚠⚠" + "✗✗" + "☡☡" + "∆∆" + "≈≈")
 	}
