@@ -41,7 +41,7 @@ func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here, will be global for your application.
 	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.s3-cisbench.yaml)")
-	rootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "Enable verbose logging")
+	rootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "Enable verbose logging; recommende to only run with -o noout")
 
 	// Cobra also supports local flags, which will only run when this action is called directly.
 	// Example rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")

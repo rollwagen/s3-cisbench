@@ -71,3 +71,11 @@ git clone https://github.com/rollwagen/s3-cisbench
 cd s3-cisbench
 make
 ```
+
+## Run
+Either download binaries (Releases) or build (see above). Alternatively, run
+directly with `go run`:
+
+```sh
+go run github.com/rollwagen/s3-cisbench@latest --help
+```
