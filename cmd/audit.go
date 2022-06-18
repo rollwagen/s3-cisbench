@@ -8,8 +8,6 @@ import (
 
 	"github.com/rollwagen/s3-cisbench/internal/printers"
 
-	"github.com/fatih/color"
-
 	"github.com/aws/smithy-go"
 
 	"github.com/briandowns/spinner"
@@ -21,32 +19,58 @@ import (
 
 var outputFormat string
 
+func getBucketsCompletion(toComplete string) []string {
+	completions, err := aws.GetBucketNamesWithPrefix(toComplete)
+	if err != nil {
+		log.Debugf("Could not complete names %v", err)
+	}
+	return completions
+}
+
 // auditCmd represents the audit command
 var auditCmd = &cobra.Command{
-	Use:   "audit",
+	Use:   "audit [<bucket name>]",
 	Short: "Audit S3 buckets against applicable CIS benchmark items",
-	Long:  `Audit S3 buckets against applicable CIS benchmark items`,
+	Long:  `Audit S3 buckets against applicable CIS benchmark items. If optionally a bucket name is provided, only this bucket is audited. `,
+	ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		if len(args) != 0 {
+			return nil, cobra.ShellCompDirectiveNoFileComp
+		}
+		return getBucketsCompletion(toComplete), cobra.ShellCompDirectiveNoFileComp
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		s := spinner.New(spinner.CharSets[11], 60*time.Millisecond)
 		if !debug { // no spinner when debug output enabled
 			s.Start()
 		}
-		s.Suffix = " Getting S3 buckets..."
 
-		var reports []audit.BucketReport
-		bucketAuditor := audit.New()
-		buckets, err := aws.GetBuckets()
-		if err != nil {
-			s.Stop()
-			var e smithy.APIError
-			if errors.As(err, &e) {
-				log.Errorf("Error listing S3 buckets: %v: %v", e.ErrorCode(), e.ErrorMessage())
-			} else {
-				log.Errorf(color.RedString("Unexpected error: ")+"%v", err)
+		var buckets []aws.Bucket
+		if len(args) != 0 {
+			name := args[0]
+			bucket, err := aws.GetBucketByName(name)
+			if err != nil {
+				log.Errorf("Error S3 buckets with name %s: %v", name, err)
 			}
-			os.Exit(1)
+			buckets = append(buckets, bucket)
+		} else {
+			s.Suffix = " Getting S3 buckets..."
+			var err error
+			buckets, err = aws.GetBuckets()
+			if err != nil {
+				s.Stop()
+				var e smithy.APIError
+				if errors.As(err, &e) {
+					log.Errorf("Error listing S3 buckets: %v: %v", e.ErrorCode(), e.ErrorMessage())
+				} else {
+					log.Errorf("Unexpected error: %v", err)
+				}
+				os.Exit(1)
+			}
 		}
+
 		s.Suffix = " Auditing buckets..."
+		bucketAuditor := audit.New()
+		var reports []audit.BucketReport
 		for i, b := range buckets {
 			s.Suffix = fmt.Sprintf(" Auditing buckets: [%d/%d] %s...", i, len(buckets), b.Name)
 			reports = append(reports, bucketAuditor.Report(b.Name, b.AccountID, b.Region))
@@ -66,7 +90,6 @@ var auditCmd = &cobra.Command{
 		case outputFormat == "noout":
 			p = &printers.NooutPrinter{}
 		}
-
 		_ = p.PrintReport(reports, writer)
 	},
 }
