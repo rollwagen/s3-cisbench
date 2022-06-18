@@ -58,13 +58,13 @@ var auditCmd = &cobra.Command{
 		var p printers.BucketReportPrinter
 		switch {
 		case outputFormat == "txt":
-			p = printers.TextPrinter{}
+			p = &printers.TextPrinter{}
 		case outputFormat == "json":
-			p = printers.JSONPrinter{}
+			p = &printers.JSONPrinter{}
 		case outputFormat == "csv":
-			p = printers.CSVPrinter{}
+			p = &printers.CSVPrinter{}
 		case outputFormat == "noout":
-			p = printers.NooutPrinter{}
+			p = &printers.NooutPrinter{}
 		}
 
 		_ = p.PrintReport(reports, writer)

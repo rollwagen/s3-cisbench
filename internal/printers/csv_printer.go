@@ -10,7 +10,7 @@ import (
 
 type CSVPrinter struct{}
 
-func (r CSVPrinter) PrintReport(reports []audit.BucketReport, w io.Writer) error {
+func (r *CSVPrinter) PrintReport(reports []audit.BucketReport, w io.Writer) error {
 	b := func(b bool) string {
 		return strconv.FormatBool(b)
 	}

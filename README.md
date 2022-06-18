@@ -1,5 +1,9 @@
 # s3-cisbench
 
+![Go (build)](https://github.com/rollwagen/s3-cisbench/workflows/build/badge.svg)
+[![Go Report Card](https://goreportcard.com/badge/github.com/rollwagen/s3-cisbench)](https://goreportcard.com/report/github.com/rollwagen/s3-cisbench)
+![CodeQL](https://github.com/rollwagen/s3-cisbench/workflows/CodeQL/badge.svg)
+
 ![image](https://user-images.githubusercontent.com/7364201/161427647-8b1978de-a37c-4a57-a3df-fde00e8e5737.png)
 
 A simple command line tool that checks S3 bucket against (security-) best
