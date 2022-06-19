@@ -9,7 +9,6 @@
 A simple command line tool that checks S3 bucket against (security-) best
 practices, mainly CIS benchmark based.
 
-> ⚠ ⚠  This project is currently work-in-progress
 
 ## CIS AWS Benchmark v1.4.0: Storage
 
@@ -53,6 +52,11 @@ Flags:
 
 Use "s3-cisbench [command] --help" for more information about a command.
 ```
+
+The `audit` command supports dynamic completion of available buckets.
+
+
+> Screenshots below show and early version that didn't yet have all benchmark checks
 
 ### 'audit' Command Output Example
 
