@@ -1,6 +1,7 @@
 # Ignore executables
 s3-cisbench
 bin/**
+dist/
 
 # Ignore IDE settings
 .idea
