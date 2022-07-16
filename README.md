@@ -68,18 +68,28 @@ Usage of json output with leveraging `jq` for further filtering:
 
 <img src="docs/s3-cisbench-json.png"   width="90%">
 
+
+## Install and run
+
+### Brew
+
+```sh
+brew tap rollwagen/homebrew-tap
+brew install rollwagen/tap/s3-cisbench
+```
+
+### Go
+
+To run directly:
+
+```sh
+go run github.com/rollwagen/s3-cisbench@latest --help
+```
+
 ## Build
 
 ```sh
 git clone https://github.com/rollwagen/s3-cisbench
 cd s3-cisbench
 make
-```
-
-## Run
-Either download binaries (Releases) or build (see above). Alternatively, run
-directly with `go run`:
-
-```sh
-go run github.com/rollwagen/s3-cisbench@latest --help
 ```
