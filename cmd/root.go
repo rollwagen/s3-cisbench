@@ -8,10 +8,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// if debug logging is on or off
+// if debug logging is on or off.
 var debug bool
 
-// rootCmd represents the base command when called without any subcommands
+// rootCmd represents the base command when called without any subcommands.
 var rootCmd = &cobra.Command{
 	Use:   "s3-cisbench",
 	Short: "s3-csibench is a tool that analyses S3 bucket against CIS benchmark rules",
@@ -28,23 +28,17 @@ var rootCmd = &cobra.Command{
 func Execute() {
 	rootCmd.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
 		setUpLogging(debug)
+
 		return nil
 	}
 
-	err := rootCmd.Execute()
-	if err != nil {
+	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
 }
 
 func init() {
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here, will be global for your application.
-	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.s3-cisbench.yaml)")
 	rootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "Enable verbose logging; recommende to only run with -o noout")
-
-	// Cobra also supports local flags, which will only run when this action is called directly.
-	// Example rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 func setUpLogging(debug bool) {
