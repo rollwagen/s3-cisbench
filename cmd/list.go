@@ -7,10 +7,9 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/aws/smithy-go"
-
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/smithy-go"
 	"github.com/fatih/color"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -37,9 +36,9 @@ func PrintAllBuckets() {
 	if err != nil {
 		var e smithy.APIError
 		if errors.As(err, &e) {
-			fmt.Fprintf(os.Stderr, color.RedString("Error listing S3 buckets: ")+"%v - %v\n", e.ErrorCode(), e.ErrorMessage())
+			_, _ = fmt.Fprintf(os.Stderr, color.RedString("Error listing S3 buckets: ")+"%v - %v\n", e.ErrorCode(), e.ErrorMessage())
 		} else {
-			fmt.Fprintf(os.Stderr, color.RedString("Unexpected error: ")+"%v", err)
+			_, _ = fmt.Fprintf(os.Stderr, color.RedString("Unexpected error: ")+"%v", err)
 		}
 		os.Exit(1)
 	}

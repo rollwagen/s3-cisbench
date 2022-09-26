@@ -19,8 +19,9 @@ func (r *TextPrinter) PrintReport(report []audit.BucketReport, w io.Writer) erro
 
 	type Glyph string
 	const (
-		GlyphVLine   Glyph = "│" // "\uf6d7"
-		GlyphHLine   Glyph = "\u2015"
+		// GlyphVLine   Glyph = "│" // "\uf6d7"
+		// GlyphHLine   Glyph = "\u2015"
+
 		GlyphVDotted Glyph = "\uf6d7"
 		GlyphHDotted Glyph = "\uE621"
 	)

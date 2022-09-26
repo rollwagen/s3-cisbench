@@ -35,32 +35,35 @@ type policyDocument struct {
 	Statements []statement `json:"statement"`
 }
 
-// Value is needed b/c AWS allows string or []string as value; convert everything to []string to avoid casting
+// Value is needed b/c AWS allows string or []string as value; convert everything to []string to avoid casting.
 type Value []string
 
-func (value *Value) UnmarshalJSON(b []byte) error {
+func (v *Value) UnmarshalJSON(b []byte) error {
 	var raw interface{}
-	err := json.Unmarshal(b, &raw)
-	if err != nil {
-		return err
+	if err := json.Unmarshal(b, &raw); err != nil {
+		return fmt.Errorf("could not unmarshall json: %v", err)
 	}
 
-	var p []string
-	//  value could be string or []string -> convert everything to []string
-	switch v := raw.(type) {
+	var value []string
+	// value could be string or []string -> convert everything to []string
+	switch valueType := raw.(type) {
 	case string:
-		p = []string{v}
+		value = []string{valueType}
+
 	case []interface{}:
 		var items []string
-		for _, item := range v {
-			items = append(items, fmt.Sprintf("%v", item))
+		for _, item := range valueType {
+			items = append(items, fmt.Sprintf("%valueType", item))
 		}
-		p = items
+
+		value = items
+
 	default:
 		return fmt.Errorf("invalid %v value element: allowed is only string or []string", value)
 	}
 
-	*value = p
+	*v = value
+
 	return nil
 }
 
@@ -99,11 +102,11 @@ func (auditor *BucketAuditor) Report(bucketName string, accountID string, region
 
 	bucketReport.VersioningEnabled = false
 	input := &s3.GetBucketVersioningInput{Bucket: &bucketName, ExpectedBucketOwner: &accountID}
+
 	versioningOutput, err := s3Client.GetBucketVersioning(context.TODO(), input)
 	if err != nil {
 		logBucket.Debugf("Error getting versioning status for bucket %s: %v", bucketName, err)
 	} else {
-
 		versioningStatus := versioningOutput.Status
 		logBucket.Debugf("Versioning status: %#v", versioningStatus)
 		if versioningStatus == "Enabled" {
@@ -118,13 +121,13 @@ func (auditor *BucketAuditor) Report(bucketName string, accountID string, region
 	}
 
 	encryptionInput := &s3.GetBucketEncryptionInput{Bucket: &bucketName, ExpectedBucketOwner: &accountID}
+
 	encryptionOutput, err := s3Client.GetBucketEncryption(context.TODO(), encryptionInput)
 	if err != nil {
 		// api error ServerSideEncryptionConfigurationNotFoundError:
 		// The server side encryption configuration was not found
 		logBucket.Debug("Error getting bucket encryption status.")
 		bucketReport.ServerSideEncryptionEnabled = false
-
 	} else {
 		bucketReport.ServerSideEncryptionEnabled = true
 
@@ -138,6 +141,7 @@ func (auditor *BucketAuditor) Report(bucketName string, accountID string, region
 	}
 
 	publicAccessBlockInput := &s3.GetPublicAccessBlockInput{Bucket: &bucketName, ExpectedBucketOwner: &accountID}
+
 	publicAccessBlockOutput, err := s3Client.GetPublicAccessBlock(context.TODO(), publicAccessBlockInput)
 	if err != nil {
 		logBucket.Debug("Error getting public access block info.")
@@ -153,7 +157,8 @@ func (auditor *BucketAuditor) Report(bucketName string, accountID string, region
 	// 2.1.2 Ensure S3 Bucket Policy is set to deny HTTP requests
 	// https://aws.amazon.com/premiumsupport/knowledge-center/s3-bucket-policy-for-config-rule/
 	// https://docs.fugue.co/FG_R00100.html
-	// {"Version":"2012-10-17","statement":[{"Sid":"AWSCloudTrailAclCheck20150319","Effect":"Allow","Principal":{"Service":"clou
+	// { "Version":"2012-10-17",  "statement":
+	//	    [{"Sid":"AWSCloudTrailAclCheck20150319","Effect":"Allow","Principal":{"Service":"cloud
 	bucketReport.PolicyDenyHTTP = false
 
 	bucketPolicyInput := &s3.GetBucketPolicyInput{Bucket: &bucketName, ExpectedBucketOwner: &accountID}
@@ -228,7 +233,8 @@ func (auditor *BucketAuditor) Report(bucketName string, accountID string, region
 						bucketResourcesCovered := resourceBucket && resourceBucketContent
 						logPolicy.Debugf("bucketResourcesCovered = %v", bucketResourcesCovered)
 
-						bucketReport.PolicyDenyHTTP = denyUnsecureTransport && s3ActionsCovered && principalCovered && bucketResourcesCovered
+						bucketReport.PolicyDenyHTTP = denyUnsecureTransport && s3ActionsCovered &&
+							principalCovered && bucketResourcesCovered
 						logPolicy.Debugf("policyDenyHTTP = %v", bucketReport.PolicyDenyHTTP)
 					}
 				}
