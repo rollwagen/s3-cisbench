@@ -50,7 +50,7 @@ var auditCmd = &cobra.Command{
 			name := args[0]
 			bucket, err := aws.GetBucketByName(name)
 			if err != nil {
-				log.Errorf("Error S3 buckets with name %spinner: %v", name, err)
+				log.Errorf("Error S3 bucket with name %s: %v", name, err)
 			}
 			buckets = append(buckets, bucket)
 		} else {
