@@ -18,7 +18,6 @@ builds:
       - -s -w -X main.build={{.Version}}
 
 brews:
-  - name: s3-cisbench
   - tap:
       owner: rollwagen
       name: homebrew-tap
