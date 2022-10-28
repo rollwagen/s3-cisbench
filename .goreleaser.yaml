@@ -19,11 +19,11 @@ builds:
 
 brews:
   - name: s3-cisbench
-    tap:
+  - tap:
       owner: rollwagen
       name: homebrew-tap
     license: Apache-2.0
-  - install: |-
+    install: |-
       bin.install "s3-cisbench"
       bash_completion.install "completions/s3-cisbench.bash" => "s3-cisbench"
       zsh_completion.install "completions/s3-cisbench.zsh" => "_s3-cisbench"
