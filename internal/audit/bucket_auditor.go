@@ -72,9 +72,11 @@ type BucketReport struct {
 	AccountID                   string `json:"accountId"`
 	Region                      string `json:"region"`
 	ServerSideEncryptionEnabled bool   `json:"serverSideEncryptionEnabled"`
-	VersioningEnabled           bool   `json:"versioningEnabled"`
-	MFADelete                   bool   `json:"mfaDelete"`
-	PolicyDenyHTTP              bool   `json:"policyDenyHttp"`
+	// EncryptionKeyType           KeyType `json:"-"`
+	CustomerManagedKey bool `json:"customerManagedKey"`
+	VersioningEnabled  bool `json:"versioningEnabled"`
+	MFADelete          bool `json:"mfaDelete"`
+	PolicyDenyHTTP     bool `json:"policyDenyHttp"`
 
 	BlockPublicAccess struct {
 		BlockPublicAcls       bool `json:"blockPublicAcls"`
@@ -83,6 +85,13 @@ type BucketReport struct {
 		RestrictPublicBuckets bool `json:"restrictPublicBuckets"`
 	}
 }
+
+//type KeyType uint8
+//const (
+//	KeyTypeUnknown KeyType = iota
+//	KeyTypeAWSManagedKey
+//	KeyTypeAWSCustomerManagedKey
+//)
 
 type BucketAuditor struct{}
 
@@ -128,15 +137,22 @@ func (auditor *BucketAuditor) Report(bucketName string, accountID string, region
 		// The server side encryption configuration was not found
 		logBucket.Debug("Error getting bucket encryption status.")
 		bucketReport.ServerSideEncryptionEnabled = false
+		bucketReport.CustomerManagedKey = false
 	} else {
 		bucketReport.ServerSideEncryptionEnabled = true
 
 		for _, rule := range encryptionOutput.ServerSideEncryptionConfiguration.Rules {
+			// 'SSEAlgorithm': 'AES256'|'aws:kms'
 			if rule.ApplyServerSideEncryptionByDefault.SSEAlgorithm == "AES256" {
 				logBucket.Info("SSEAlgorithm is 'AES256'")
 			}
-			// c.Println(rule.ApplyServerSideEncryptionByDefault.KMSMasterKeyID)
-			// c.Println(rule.BucketKeyEnabled)
+			if rule.ApplyServerSideEncryptionByDefault.SSEAlgorithm == "aws:kms" &&
+				rule.ApplyServerSideEncryptionByDefault.KMSMasterKeyID != nil {
+				logBucket.Info("SSEAlgorithm is 'aws:kms'")
+				logBucket.Debugf("KMSMasterKeyID: %s", *rule.ApplyServerSideEncryptionByDefault.KMSMasterKeyID)
+				bucketReport.CustomerManagedKey = true
+			}
+			logBucket.Debugf("BucketKeyEnabled: %v", rule.BucketKeyEnabled)
 		}
 	}
 

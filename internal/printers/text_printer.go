@@ -54,7 +54,11 @@ func (r *TextPrinter) PrintReport(report []audit.BucketReport, w io.Writer) erro
 			//_, _ = c.Print("\t\t\uf046 ")
 			c = color.New(color.FgGreen)
 			//_, _ = cBucket.Println(" Server side encryption with AES256 is enabled")
-			_, _ = c.Println(" Server side encryption is enabled")
+			if b.CustomerManagedKey {
+				_, _ = c.Println(" Server side encryption is enabled with customer managed \uf80a")
+			} else {
+				_, _ = c.Println(" Server side encryption is enabled")
+			}
 		} else {
 			c := color.New(color.FgHiRed).Add(color.Bold)
 			_, _ = c.Print("\t\t\uf73f") // cBucket.Print("\t\t\uf071")
