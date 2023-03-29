@@ -19,7 +19,7 @@ import (
 var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List AWS S3 buckets.",
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		PrintAllBuckets()
 	},
 }
