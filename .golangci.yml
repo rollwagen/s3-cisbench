@@ -1,12 +1,14 @@
 ---
 run:
   deadline: 5m
+  skip-dirs:
+  - assets
 
 linters:
   disable-all: true
   enable:
     # - bodyclose
-    - deadcode
+    # - deadcode # DEPRECATED
     # - depguard
     # - dogsled
     # - dupl
@@ -23,8 +25,8 @@ linters:
     - revive
     # - gomnd
     # - goprintffuncname
-    # - gosec
-    # - gosimple
+    - gosec
+    - gosimple
     - govet
     - ineffassign
     # - lll
@@ -36,12 +38,18 @@ linters:
     # - rowserrcheck
     # - scopelint
     # - staticcheck
-    - structcheck
+    # - structcheck # DEPRECATED
     - stylecheck
     - typecheck
     - unconvert
     - unparam
     - unused
-    - varcheck
+    # - varcheck # DEPRECATED
     # - whitespace
   fast: false
+
+linters-settings:
+        revive:
+            rules:
+                - name: var-naming
+                  disabled: false

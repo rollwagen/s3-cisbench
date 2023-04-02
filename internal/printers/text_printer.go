@@ -51,9 +51,9 @@ func (r *TextPrinter) PrintReport(report []audit.BucketReport, w io.Writer) erro
 			//	if rule.ApplyServerSideEncryptionByDefault.SSEAlgorithm == "AES256" {
 			c := color.New(color.FgHiGreen).Add(color.Bold)
 			_, _ = c.Print("\t\t\ufc98 ")
-			//_, _ = c.Print("\t\t\uf046 ")
+			// _, _ = c.Print("\t\t\uf046 ")
 			c = color.New(color.FgGreen)
-			//_, _ = cBucket.Println(" Server side encryption with AES256 is enabled")
+			// _, _ = cBucket.Println(" Server side encryption with AES256 is enabled")
 			if b.CustomerManagedKey {
 				_, _ = c.Println(" Server side encryption is enabled with customer managed \uf80a")
 			} else {

@@ -11,10 +11,6 @@ import (
 type CSVPrinter struct{}
 
 func (r *CSVPrinter) PrintReport(reports []audit.BucketReport, w io.Writer) error {
-	b := func(b bool) string {
-		return strconv.FormatBool(b)
-	}
-
 	csvWriter := csv.NewWriter(w)
 	var data [][]string
 	data = append(data, []string{
@@ -36,14 +32,14 @@ func (r *CSVPrinter) PrintReport(reports []audit.BucketReport, w io.Writer) erro
 			r.AccountID,
 			r.Region,
 			r.Name,
-			b(r.ServerSideEncryptionEnabled),
-			b(r.VersioningEnabled),
-			b(r.MFADelete),
-			b(r.PolicyDenyHTTP),
-			b(bpa.BlockPublicAcls),
-			b(bpa.IgnorePublicAcls),
-			b(bpa.BlockPublicPolicy),
-			b(bpa.RestrictPublicBuckets),
+			strconv.FormatBool(r.ServerSideEncryptionEnabled),
+			strconv.FormatBool(r.VersioningEnabled),
+			strconv.FormatBool(r.MFADelete),
+			strconv.FormatBool(r.PolicyDenyHTTP),
+			strconv.FormatBool(bpa.BlockPublicAcls),
+			strconv.FormatBool(bpa.IgnorePublicAcls),
+			strconv.FormatBool(bpa.BlockPublicPolicy),
+			strconv.FormatBool(bpa.RestrictPublicBuckets),
 		}
 		data = append(data, row)
 	}
