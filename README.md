@@ -3,6 +3,7 @@
 [![GitHub Release](https://img.shields.io/github/release/rollwagen/s3-cisbench.svg)](https://github.com/rollwagen/s3-cisbench/releases)
 [![Go Report Card](https://goreportcard.com/badge/github.com/rollwagen/s3-cisbench)](https://goreportcard.com/report/github.com/rollwagen/s3-cisbench)
 ![CodeQL](https://github.com/rollwagen/s3-cisbench/workflows/CodeQL/badge.svg)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/rollwagen/s3-cisbench/badge)](https://api.securityscorecards.dev/projects/github.com/rollwagen/s3-cisbench)
 [![Powered By: GoReleaser](https://img.shields.io/badge/powered%20by-goreleaser-green.svg?style=flat-square)](https://github.com/goreleaser)
 
 ![image](https://user-images.githubusercontent.com/7364201/161427647-8b1978de-a37c-4a57-a3df-fde00e8e5737.png)
