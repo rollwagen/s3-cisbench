@@ -31,6 +31,17 @@ brews:
 checksum:
   name_template: 'checksums.txt'
 
+signs:
+  - cmd: cosign
+    stdin: '{{ .Env.COSIGN_PWD }}'
+    args:
+      - sign-blob
+      - --key=assets/cosign/cosign.key
+      - --output-signature=${signature}
+      - --yes
+      - ${artifact}
+    artifacts: checksum
+
 archives:
   - files:
       - README.md
