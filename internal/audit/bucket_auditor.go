@@ -86,12 +86,12 @@ type BucketReport struct {
 	}
 }
 
-//type KeyType uint8
-//const (
+// type KeyType uint8
+// const (
 //	KeyTypeUnknown KeyType = iota
 //	KeyTypeAWSManagedKey
 //	KeyTypeAWSCustomerManagedKey
-//)
+// )
 
 type BucketAuditor struct{}
 
