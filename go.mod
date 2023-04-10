@@ -12,7 +12,7 @@ require (
 	github.com/briandowns/spinner v1.23.0
 	github.com/fatih/color v1.15.0
 	github.com/sirupsen/logrus v1.9.0
-	github.com/spf13/cobra v1.6.1
+	github.com/spf13/cobra v1.7.0
 )
 
 require (
