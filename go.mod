@@ -11,7 +11,7 @@ require (
 	github.com/aws/smithy-go v1.13.5
 	github.com/briandowns/spinner v1.23.0
 	github.com/fatih/color v1.15.0
-	github.com/sirupsen/logrus v1.9.0
+	github.com/sirupsen/logrus v1.9.2
 	github.com/spf13/cobra v1.7.0
 )
 
