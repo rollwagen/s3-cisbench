@@ -3,12 +3,12 @@ module github.com/rollwagen/s3-cisbench
 go 1.20
 
 require (
-	github.com/aws/aws-sdk-go-v2 v1.19.1
+	github.com/aws/aws-sdk-go-v2 v1.20.0
 	github.com/aws/aws-sdk-go-v2/config v1.18.30
 	github.com/aws/aws-sdk-go-v2/feature/s3/manager v1.11.74
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.37.1
 	github.com/aws/aws-sdk-go-v2/service/sts v1.20.1
-	github.com/aws/smithy-go v1.13.5
+	github.com/aws/smithy-go v1.14.0
 	github.com/briandowns/spinner v1.23.0
 	github.com/fatih/color v1.15.0
 	github.com/sirupsen/logrus v1.9.3
