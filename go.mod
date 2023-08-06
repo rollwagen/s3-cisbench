@@ -7,7 +7,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/config v1.18.30
 	github.com/aws/aws-sdk-go-v2/feature/s3/manager v1.11.74
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.38.1
-	github.com/aws/aws-sdk-go-v2/service/sts v1.20.1
+	github.com/aws/aws-sdk-go-v2/service/sts v1.21.1
 	github.com/aws/smithy-go v1.14.0
 	github.com/briandowns/spinner v1.23.0
 	github.com/fatih/color v1.15.0
