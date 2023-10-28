@@ -22,7 +22,7 @@ func (r *TextPrinter) PrintReport(report []audit.BucketReport, w io.Writer) erro
 		// GlyphVLine   Glyph = "│" // "\uf6d7"
 		// GlyphHLine   Glyph = "\u2015"
 
-		GlyphVDotted Glyph = "\uf6d7"
+		GlyphVDotted Glyph = "󰇘"
 		GlyphHDotted Glyph = "\uE621"
 	)
 
@@ -38,7 +38,7 @@ func (r *TextPrinter) PrintReport(report []audit.BucketReport, w io.Writer) erro
 		}
 
 		// Bucket name
-		colorBucketPrintln(" \uF5A7 " + b.Name)
+		colorBucketPrintln(" \uE703 " + b.Name)
 
 		// CIS 2.1.1 - ServerSideEncryptionEnabled
 		colorBucketPrint(" " + GlyphHDotted)
@@ -50,18 +50,18 @@ func (r *TextPrinter) PrintReport(report []audit.BucketReport, w io.Writer) erro
 			// for _, rule := range encryptionOutput.ServerSideEncryptionConfiguration.Rules {
 			//	if rule.ApplyServerSideEncryptionByDefault.SSEAlgorithm == "AES256" {
 			c := color.New(color.FgHiGreen).Add(color.Bold)
-			_, _ = c.Print("\t\t\ufc98 ")
+			_, _ = c.Print("\t\t󰞚 ")
 			// _, _ = c.Print("\t\t\uf046 ")
 			c = color.New(color.FgGreen)
 			// _, _ = cBucket.Println(" Server side encryption with AES256 is enabled")
 			if b.CustomerManagedKey {
-				_, _ = c.Println(" Server side encryption is enabled with customer managed \uf80a")
+				_, _ = c.Println(" Server side encryption is enabled with customer managed 󰌋")
 			} else {
 				_, _ = c.Println(" Server side encryption is enabled")
 			}
 		} else {
 			c := color.New(color.FgHiRed).Add(color.Bold)
-			_, _ = c.Print("\t\t\uf73f") // cBucket.Print("\t\t\uf071")
+			_, _ = c.Print("\t\t󰉀") // cBucket.Print("\t\t\uf071")
 			c = color.New(color.FgRed)
 			_, _ = c.Println(" No server side encryption found")
 		}
@@ -95,7 +95,7 @@ func (r *TextPrinter) PrintReport(report []audit.BucketReport, w io.Writer) erro
 			_, _ = c.Println(" S3 bucket has versioning enabled")
 		} else {
 			c := color.New(color.FgHiRed).Add(color.Bold)
-			_, _ = c.Print("\t\t\uf73f") // cBucket.Print("\t\t\uf071")
+			_, _ = c.Print("\t\t󰉀") // cBucket.Print("\t\t\uf071")
 			c = color.New(color.FgRed)
 			_, _ = c.Println(" Versioning is not enabled")
 		}
