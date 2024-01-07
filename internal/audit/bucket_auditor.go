@@ -163,10 +163,10 @@ func (auditor *BucketAuditor) Report(bucketName string, accountID string, region
 		logBucket.Debug("Error getting public access block info.")
 	} else {
 		conf := publicAccessBlockOutput.PublicAccessBlockConfiguration
-		bucketReport.BlockPublicAccess.BlockPublicAcls = conf.BlockPublicAcls
-		bucketReport.BlockPublicAccess.BlockPublicPolicy = conf.BlockPublicPolicy
-		bucketReport.BlockPublicAccess.IgnorePublicAcls = conf.IgnorePublicAcls
-		bucketReport.BlockPublicAccess.RestrictPublicBuckets = conf.RestrictPublicBuckets
+		bucketReport.BlockPublicAccess.BlockPublicAcls = *conf.BlockPublicAcls
+		bucketReport.BlockPublicAccess.BlockPublicPolicy = *conf.BlockPublicPolicy
+		bucketReport.BlockPublicAccess.IgnorePublicAcls = *conf.IgnorePublicAcls
+		bucketReport.BlockPublicAccess.RestrictPublicBuckets = *conf.RestrictPublicBuckets
 
 	}
 
