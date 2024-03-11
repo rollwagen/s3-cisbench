@@ -3,7 +3,7 @@ module github.com/rollwagen/s3-cisbench
 go 1.21
 
 require (
-	github.com/aws/aws-sdk-go-v2 v1.25.2
+	github.com/aws/aws-sdk-go-v2 v1.25.3
 	github.com/aws/aws-sdk-go-v2/config v1.26.6
 	github.com/aws/aws-sdk-go-v2/feature/s3/manager v1.15.11
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.51.1
