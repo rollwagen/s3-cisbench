@@ -8,7 +8,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/feature/s3/manager v1.16.13
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.53.0
 	github.com/aws/aws-sdk-go-v2/service/sts v1.28.5
-	github.com/aws/smithy-go v1.20.2
+	github.com/aws/smithy-go v1.21.0
 	github.com/briandowns/spinner v1.23.1
 	github.com/fatih/color v1.17.0
 	github.com/sirupsen/logrus v1.9.3
