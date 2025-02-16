@@ -1,4 +1,5 @@
 project_name: s3-cisbench
+version: 2
 
 before:
   hooks:
@@ -18,7 +19,8 @@ builds:
       - -s -w -X main.build={{.Version}}
 
 brews:
-  - tap:
+  -
+    repository:
       owner: rollwagen
       name: homebrew-tap
     license: Apache-2.0
@@ -49,7 +51,7 @@ archives:
       - completions/*
 
 snapshot:
-  name_template: "{{ incpatch .Version }}-next"
+  version_template: "{{ incpatch .Version }}-next"
 
 changelog:
   sort: asc
